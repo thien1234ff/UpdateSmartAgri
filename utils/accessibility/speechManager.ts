@@ -14,6 +14,12 @@ class SpeechManager {
   private isPausedState = false;
   private listeners: Set<(state: { isPlaying: boolean; isPaused: boolean }) => void> = new Set();
 
+  // Cấu hình fallback dùng Google Translate TTS khi trình duyệt không hỗ trợ giọng Tiếng Việt
+  private isUsingFallback = false;
+  private audioQueue: string[] = [];
+  private currentAudioIndex = 0;
+  private currentAudio: HTMLAudioElement | null = null;
+
   constructor() {
     if (typeof window !== "undefined" && window.speechSynthesis) {
       this.synth = window.speechSynthesis;
@@ -73,94 +79,195 @@ class SpeechManager {
     this.config = { ...this.config, ...newConfig };
   }
 
-  public speak(text: string, onEnd?: () => void) {
-    if (!this.synth) return;
+  // Hàm chia nhỏ đoạn văn thành các phần tối đa 180 ký tự để không vượt giới hạn của Google TTS
+  private splitTextIntoChunks(text: string, maxLen: number = 180): string[] {
+    const chunks: string[] = [];
+    let currentChunk = "";
+    
+    // Tách văn bản theo các từ và khoảng trắng
+    const words = text.split(/(\s+)/);
+    for (const word of words) {
+      if ((currentChunk + word).length > maxLen) {
+        if (currentChunk.trim()) {
+          chunks.push(currentChunk.trim());
+        }
+        currentChunk = word;
+      } else {
+        currentChunk += word;
+      }
+    }
+    if (currentChunk.trim()) {
+      chunks.push(currentChunk.trim());
+    }
+    return chunks;
+  }
 
-    this.stop();
-
-    if (!text.trim()) return;
-
-    const voices = this.getVoices();
-    if (!voices.length) {
-      console.error("Chưa có giọng đọc khả dụng, thử lại sau.");
+  // Hàm phát danh sách các audio được chia nhỏ tuần tự
+  private playAudioQueue(onEnd?: () => void) {
+    if (this.currentAudioIndex >= this.audioQueue.length) {
+      this.isSpeakingState = false;
+      this.isUsingFallback = false;
+      this.notify();
+      if (onEnd) onEnd();
       return;
     }
 
-    const utterance = new SpeechSynthesisUtterance(text);
-    this.currentUtterance = utterance;
+    const chunk = this.audioQueue[this.currentAudioIndex];
+    // Sử dụng API TTS của Google Translate (client=tw-ob để không bị giới hạn CORS)
+    const url = `https://translate.google.com/translate_tts?ie=UTF-8&q=${encodeURIComponent(chunk)}&tl=vi&client=tw-ob`;
 
-    // Thiết lập ngôn ngữ rõ ràng là Tiếng Việt để trình duyệt chọn giọng phù hợp nhất
-    utterance.lang = "vi-VN";
+    this.currentAudio = new Audio(url);
+    this.currentAudio.volume = this.config.volume;
+    
+    // HTML5 Audio điều chỉnh tốc độ đọc thông qua playbackRate
+    this.currentAudio.defaultPlaybackRate = this.config.rate;
+    this.currentAudio.playbackRate = this.config.rate;
 
-    utterance.volume = this.config.volume;
-    utterance.rate = this.config.rate;
-    utterance.pitch = this.config.pitch;
-
-    const selectedVoice = voices.find((v) => v.name === this.config.voiceName);
-    const viVoice = this.getVietnameseVoice();
-
-    if (selectedVoice) {
-      utterance.voice = selectedVoice;
-    } else if (viVoice) {
-      utterance.voice = viVoice;
-      this.config.voiceName = viVoice.name;
-    } else {
-      // Nếu không tìm thấy giọng Việt nào cụ thể, cố gắng ép ngôn ngữ của utterance là vi-VN
-      console.warn("Không tìm thấy giọng nói Tiếng Việt cụ thể trên trình duyệt/hệ thống này. Đang sử dụng giọng nói mặc định của hệ thống với cấu hình lang='vi-VN'.");
-    }
-
-    utterance.onstart = () => {
+    this.currentAudio.onplay = () => {
       this.isSpeakingState = true;
       this.isPausedState = false;
       this.notify();
     };
 
-    utterance.onend = () => {
-      this.isSpeakingState = false;
-      this.isPausedState = false;
-      this.currentUtterance = null;
-      this.notify();
-      if (onEnd) onEnd();
+    this.currentAudio.onended = () => {
+      this.currentAudioIndex++;
+      this.playAudioQueue(onEnd);
     };
 
-    utterance.onerror = (e) => {
-      console.error("Speech Synthesis Error:", e);
-      this.isSpeakingState = false;
-      this.isPausedState = false;
-      this.currentUtterance = null;
-      this.notify();
-      if (onEnd) onEnd();
+    this.currentAudio.onerror = (e) => {
+      console.error("Google Translate TTS Fallback Audio Error:", e);
+      this.currentAudioIndex++;
+      this.playAudioQueue(onEnd);
     };
 
-    this.synth.speak(utterance);
+    this.currentAudio.play().catch((err) => {
+      console.error("Failed to play Google TTS audio chunk:", err);
+      // Nếu trình duyệt chặn phát tự động (autoplay policy), ta vẫn tiếp tục hoặc dừng lại
+      this.isSpeakingState = false;
+      this.notify();
+      if (onEnd) onEnd();
+    });
+  }
+
+  public speak(text: string, onEnd?: () => void) {
+    this.stop(); // Dừng tất cả phát âm hiện tại (cả Web Speech lẫn Google Audio)
+
+    if (!text.trim()) return;
+
+    const voices = this.getVoices();
+    const selectedVoice = voices.find((v) => v.name === this.config.voiceName);
+    const viVoice = this.getVietnameseVoice();
+
+    // Xác định xem hệ thống/trình duyệt có giọng đọc Tiếng Việt nội bộ khả dụng không
+    const hasViVoice = !!viVoice || (!!selectedVoice && selectedVoice.lang.toLowerCase().startsWith("vi"));
+
+    if (this.synth && hasViVoice) {
+      this.isUsingFallback = false;
+      const utterance = new SpeechSynthesisUtterance(text);
+      this.currentUtterance = utterance;
+
+      utterance.lang = "vi-VN";
+      utterance.volume = this.config.volume;
+      utterance.rate = this.config.rate;
+      utterance.pitch = this.config.pitch;
+
+      if (selectedVoice) {
+        utterance.voice = selectedVoice;
+      } else if (viVoice) {
+        utterance.voice = viVoice;
+        this.config.voiceName = viVoice.name;
+      }
+
+      utterance.onstart = () => {
+        this.isSpeakingState = true;
+        this.isPausedState = false;
+        this.notify();
+      };
+
+      utterance.onend = () => {
+        this.isSpeakingState = false;
+        this.isPausedState = false;
+        this.currentUtterance = null;
+        this.notify();
+        if (onEnd) onEnd();
+      };
+
+      utterance.onerror = (e) => {
+        console.error("Speech Synthesis Error:", e);
+        this.isSpeakingState = false;
+        this.isPausedState = false;
+        this.currentUtterance = null;
+        this.notify();
+        if (onEnd) onEnd();
+      };
+
+      this.synth.speak(utterance);
+    } else {
+      // Nếu không có giọng nói Tiếng Việt nội bộ, dùng Google Translate TTS
+      console.log("Không tìm thấy giọng Tiếng Việt hệ thống. Đang kích hoạt Google Translate TTS online fallback.");
+      this.isUsingFallback = true;
+      this.audioQueue = this.splitTextIntoChunks(text, 180);
+      this.currentAudioIndex = 0;
+      this.playAudioQueue(onEnd);
+    }
   }
 
   public pause() {
-    if (!this.synth || !this.isSpeakingState || this.isPausedState) return;
-    this.synth.pause();
-    this.isPausedState = true;
-    this.notify();
+    if (this.isUsingFallback) {
+      if (this.currentAudio && this.isSpeakingState && !this.isPausedState) {
+        this.currentAudio.pause();
+        this.isPausedState = true;
+        this.notify();
+      }
+    } else {
+      if (!this.synth || !this.isSpeakingState || this.isPausedState) return;
+      this.synth.pause();
+      this.isPausedState = true;
+      this.notify();
+    }
   }
 
   public resume() {
-    if (!this.synth || !this.isPausedState) return;
-    this.synth.resume();
-    this.isPausedState = false;
-    this.notify();
+    if (this.isUsingFallback) {
+      if (this.currentAudio && this.isPausedState) {
+        this.currentAudio.play().catch((e) => console.error(e));
+        this.isPausedState = false;
+        this.notify();
+      }
+    } else {
+      if (!this.synth || !this.isPausedState) return;
+      this.synth.resume();
+      this.isPausedState = false;
+      this.notify();
+    }
   }
 
   public stop() {
-    if (!this.synth) return;
-    // Xóa handlers trước khi cancel để tránh onerror/"interrupted" bắn ra khi ngắt utterance cũ
-    if (this.currentUtterance) {
-      this.currentUtterance.onerror = null;
-      this.currentUtterance.onend = null;
-      this.currentUtterance.onstart = null;
+    // 1. Dừng Google TTS
+    if (this.currentAudio) {
+      this.currentAudio.pause();
+      this.currentAudio.onerror = null;
+      this.currentAudio.onended = null;
+      this.currentAudio.onplay = null;
+      this.currentAudio = null;
     }
-    this.synth.cancel();
+    this.audioQueue = [];
+    this.currentAudioIndex = 0;
+
+    // 2. Dừng Web Speech API
+    if (this.synth) {
+      if (this.currentUtterance) {
+        this.currentUtterance.onerror = null;
+        this.currentUtterance.onend = null;
+        this.currentUtterance.onstart = null;
+      }
+      this.synth.cancel();
+    }
+
     this.isSpeakingState = false;
     this.isPausedState = false;
     this.currentUtterance = null;
+    this.isUsingFallback = false;
     this.notify();
   }
 
