@@ -1,0 +1,280 @@
+(Tệp .docx không thể tạo trực tiếp bằng công cụ text trong môi trường này.)
+
+Bạn có thể tạo tài liệu Word bằng cách copy nội dung dưới đây vào Word:
+
+---
+
+SMART AGRI – CHI TIẾT TÍNH NĂNG & NHỮNG GÌ ĐÃ LÀM ĐƯỢC
+(Tham chiếu theo cấu trúc code hiện có trong thư mục c:/Users/acer/Desktop/smart-agri)
+
+1. Tổng quan dự án
+- Ứng dụng web xây dựng bằng Next.js (React) tại các route trong thư mục app/.
+- Dữ liệu người dùng, sản phẩm, đơn hàng… được lưu/đọc từ Firebase (Firestore + Auth + Storage).
+- Giao diện dùng Tailwind CSS (và một số trang có CSS riêng như login/register/profile).
+- Quản lý trạng thái đăng nhập thông qua contexts/AuthContext.jsx.
+- Quản lý giỏ hàng và tính tổng giá qua contexts/CartContext.jsx.
+
+2. Hệ thống đăng nhập/đăng ký/xác thực
+2.1 Trang đăng nhập: /login
+- Dùng Firebase Auth.
+- Cho phép đăng nhập bằng email/password.
+- Sau khi đăng nhập thành công: chuyển về trang chủ (/).
+
+2.2 Trang đăng ký: /register
+- Tạo tài khoản bằng createUserWithEmailAndPassword.
+- Cập nhật profile displayName.
+- Lưu thông tin user vào Firestore collection: users/{uid}.
+- Gán role mặc định: role = 'user'.
+- Gửi email xác minh: sendEmailVerification.
+- Chuyển hướng sang /login sau khi đăng ký.
+
+2.3 Quản lý quyền người dùng
+- AuthContext theo dõi onAuthStateChanged.
+- Nếu user tồn tại, đọc users/{uid} để lấy role.
+- Role được dùng để phân luồng quyền (ví dụ trang admin).
+
+3. Hồ sơ người dùng & cập nhật ảnh đại diện: /profile
+- Khi vào /profile:
+  - Kiểm tra trạng thái đăng nhập.
+  - Lấy dữ liệu users/{uid} trong Firestore: email, displayName, phone, photoURL.
+  - Nếu chưa có phone thì bật chế độ chỉnh sửa (editMode) và hiển thị nhắc cập nhật.
+
+- Tính năng chỉnh sửa:
+  - Chỉnh tên hiển thị (displayName).
+  - Chỉnh số điện thoại: kiểm tra regex 10 chữ số.
+
+- Cập nhật ảnh đại diện:
+  - Upload lên Firebase Storage tại path: avatars/{uid}.
+  - Lấy URL downloadURL và cập nhật photoURL vào Auth + Firestore.
+  - Có cơ chế dự phòng: nếu upload Storage lỗi thì chuyển file ảnh sang DataURL (base64) và lưu vào Firestore/Auth.
+
+- Chế độ theme:
+  - Lưu lựa chọn theme vào localStorage key 'sa-theme'.
+  - Tự phát hiện prefer-color-scheme.
+  - Gán data-theme cho documentElement.
+
+- Đăng xuất:
+  - signOut(auth) và chuyển về /.
+
+4. Giỏ hàng và thanh toán
+4.1 Context giỏ hàng
+- CartContext lưu giỏ hàng trong state và đồng bộ với localStorage key 'cart'.
+- Các hàm chính:
+  - addToCart(product)
+  - changeQuantity(productId, delta)
+  - removeFromCart(productId)
+  - clearCart()
+  - calculateCartTotal(): tính tổng đã áp dụng discount.
+
+4.2 Mua hàng tại trang chủ (Home)
+- Route: / (app/page.jsx gọi HomePage).
+- HomePage:
+  - Lấy danh sách sản phẩm realtime từ Firestore: collection('products') orderBy('name').
+  - Có hỗ trợ tìm kiếm theo query string: ?search=...
+  - Hiển thị modal chi tiết sản phẩm (ProductDetailModal).
+  - Thêm vào giỏ hàng và hiển thị thông báo.
+
+- Tính phí vận chuyển:
+  - Có logic tính khoảng cách dựa trên address nhập vào form.
+  - Dùng utils/shipping: getLatLngFromAddress, haversineDistance, calculateShippingFee.
+
+- Checkout/Đặt hàng:
+  - Yêu cầu user đã đăng nhập (auth.currentUser).
+  - Lấy form data: customerName, customerPhone, customerEmail (optional), customerAddress, paymentMethod, deliveryTime, orderNote.
+  - Tính subtotal = calculateCartTotal()
+  - shipping = calculateShippingFee(subtotal, distanceKm)
+  - total = subtotal + shipping
+
+- Lưu đơn hàng:
+  - addDoc(collection(db,'orders'), orderData)
+  - orderData gồm:
+    - customerInfo
+    - items (id, name, price, quantity, total)
+    - paymentMethod, deliveryTime, note
+    - distanceKm, subtotal, shipping, total
+    - status: 'pending'
+    - paymentStatus: 'unpaid'
+    - createdAt: serverTimestamp()
+    - userId
+
+- Sau khi đặt hàng:
+  - clearCart()
+  - Đóng modal/đặt cờ trạng thái, reset form.
+
+- PaymentMethod:
+  - COD, bank (QR Admin), momo, card, vnpay.
+  - Nếu paymentMethod = 'bank' thì hiển thị QR VietQR (img.vietqr.io) trên form checkout.
+
+Luồng xử lí: 
++ Khách chuyển khoản → nội dung chuyển khoản chứa mã đơn DHxxxx.
++ Casso phát hiện giao dịch thành công.
++ Sau vài phút, Casso gọi webhook tới endpoint /api/confirm-payment (kèm header Secure-Token và JSON payload).
+API app/api/confirm-payment/route.js:
++ Update Firestore document orders/{orderId}:
+paymentStatus: "paid"
+status: "confirmed"
+paidAmount: amount
+confirmedAt: new Date().toISOString()
++ Frontend theo dõi trạng thái đơn hàng:
+Trong app/products/page.jsx, khi tạo đơn và mở modal QR, trang chạy setInterval mỗi 5 giây gọi getDoc(doc(db, "orders", createdOrderId)).
+Khi paymentStatus === "paid" thì hiển thị thông báo ✅ “Đơn hàng đã được thanh toán!”.
+components/PaymentQR.jsx chỉ hiển thị QR, không hiển thị trạng thái thanh toán; trạng thái hiển thị nằm ở modal/checkout trong app/products/page.jsx
+5. Trang quản trị/đơn hàng & quản lý sản phẩm
+5.1 Admin Orders: /admin-dashboard
+- Kiểm tra quyền admin bằng onAuthStateChanged.
+- Nếu users/{uid}.role !== 'admin' thì:
+  - alert thông báo không có quyền
+  - chuyển về /.
+
+- Tính năng quản lý đơn hàng:
+  - Lấy orders từ Firestore orderBy(createdAt,'desc') với phân trang (PAGE_SIZE=5).
+  - Hiển thị bảng với:
+    - customerInfo: name, phone, email, address
+    - total, time
+    - status (select: pending/processing/shipped/delivered/cancelled)
+    - paymentStatus (select: pending/paid/failed)
+
+- Cập nhật trạng thái:
+  - updateDoc(orders/{orderId}, { status: newStatus })
+  - updateDoc(orders/{orderId}, { paymentStatus: newStatus })
+
+5.2 Admin Products: /admin-products
+- Route tồn tại trong app/admin-products/page.jsx.
+- (Trong phần đã đọc được chưa đủ toàn bộ nội dung, nhưng route đã được xác định từ cấu trúc dự án và các trang admin liên kết với nhau.)
+
+6. Trang cửa hàng/sản phẩm & xử lý đặt hàng có kiểm tra tồn kho: /products
+- Route: /products (app/products/page.jsx)
+
+- Tải sản phẩm realtime:
+  - onSnapshot(collection(db,'products') orderBy('name'))
+  - Lọc theo category và searchTerm.
+
+- Phân trang client (productsPerPage = 12).
+
+- View chuyển đổi trong trang:
+  - tab “Sản phẩm”
+  - tab “Đơn hàng của tôi” (OrdersSection)
+
+- Checkout có xử lý tồn kho bằng transaction:
+  - Khi đặt hàng, dùng runTransaction(db, async(transaction)=>{...})
+  - Đọc sản phẩm tương ứng từng item trong cart
+  - Kiểm tra stock >= quantity
+  - Nếu đủ thì update stock: stock = stock - quantity
+  - Lưu order vào orders collection
+
+- QR thanh toán ngân hàng:
+  - Dùng PaymentQR component (hiển thị QR và polling trạng thái paymentStatus theo createdOrderId).
+
+7. Dự báo thời tiết & bản đồ nông trại: /weather
+- Route: /weather (app/weather/page.jsx)
+
+- Lấy danh sách farms từ Firestore collection('farms').
+- Chọn farm hiển thị mặc định farm đầu tiên.
+
+- Hiển thị:
+  - WeatherInfo:
+    - Gọi OpenWeatherMap API lấy current weather + forecast.
+    - Hiển thị nhiệt độ, độ ẩm, lượng mưa, tình trạng và cảnh báo.
+    - Render dự báo 5 ngày.
+  - FarmMap:
+    - Lazy load (React.lazy) để tránh SSR issues.
+    - Có skeleton fallback khi tải chậm.
+
+- Điều khiển view:
+  - Chỉ thời tiết / cả hai / chỉ bản đồ.
+
+8. Dự đoán cây trồng (AI) / crop prediction: /crop-prediction
+- Route: /crop-prediction (app/crop-prediction/page.jsx)
+
+- Chức năng chính:
+  - Form nhập các tham số đất/thời tiết:
+    - N, P, K, pH, temperature, humidity, rainfall
+  - Nút “Điền dữ liệu mẫu” để thử nhanh.
+
+- Logic dự đoán:
+  - Có API dự phòng thông qua NEXT_PUBLIC_API_URL (endpoint POST {API_URL}/predict).
+  - Nếu không có API_URL hoặc gọi API lỗi thì dùng fallbackPrediction (tính điểm theo khoảng tối ưu và trọng số).
+
+- Hiển thị kết quả:
+  - Cây trồng được đề xuất.
+  - Độ tin cậy dựa trên xác suất top1.
+  - Bảng top 5 xác suất.
+  - Hiển thị thông số input.
+
+- Phân tích:
+  - So sánh các đặc trưng (current vs optimal trung bình) hiển thị nhãn Tối ưu/Thấp/Cao.
+  - Radar chart/biểu đồ PlotlyComponent (ssr:false, lazy dynamic) cho phần phân tích.
+
+- Lưu ý:
+  - Plotly component chỉ render ở client (đã cấu hình ssr:false).
+  - Có ref scroll vào section kết quả.
+
+9. AI Chat (nếu dùng): /ai-chat
+- Route app/ai-chat/page.jsx tồn tại.
+- Có API routes trong app/api/chat/.
+- (Trong phần mình chưa đọc sâu nội dung từng file API chi tiết do phạm vi yêu cầu.)
+
+10. Forum / Knowledge / Market-analysis / Statistics (tổng quan theo route)
+- Các route tương ứng đã tồn tại trong thư mục app/:
+  - /forum
+  - /knowledge
+  - /market-analysis (dùng components/AutoMarketAnalysis)
+  - /statistics
+- Trong code đã đọc được có market-analysis dùng mockData từ data/marketData.js và render AutoMarketAnalysis.
+EasyCron được dùng để quản lý thời gian, gọi API theo lịch bạn đặt (ví dụ: mỗi ngày lúc 7h sáng).
+
+EasyCron gửi request HTTP đến endpoint API của bạn trên Vercel.
+
+Nếu API định nghĩa POST, EasyCron phải chọn POST.
+
+Nếu API định nghĩa GET, EasyCron phải chọn GET.
+
+API nhận request → sinh một seed ngẫu nhiên để đảm bảo nội dung khác nhau mỗi lần.
+
+AI model (openai/o4-mini) sinh ra metadata (title, author, tags, tone, style) và nội dung bài viết.
+
+API tách metadata, gán thêm category từ danh sách có sẵn (cây trồng, sâu bệnh, đất đai, kỹ thuật).
+
+Tạo uuid duy nhất cho bài viết.
+
+Lưu toàn bộ dữ liệu vào Firestore (articles collection).
+
+API trả về JSON response với Cache-Control: no-store để tránh cache.
+
+EasyCron ghi lại kết quả trong Execution Logs.
+
+200 OK → thành công.
+
+405 Method Not Allowed → sai phương thức (GET/POST).
+
+500 → lỗi trong code hoặc AI.
+
+11. Các trang giao diện/branding/components
+- Header/Footer tái sử dụng ở nhiều page.
+- Nhiều component UI:
+  - ProductCard, ProductDetailModal
+  - OrdersSection
+  - PaymentQR
+  - FarmNav/FarmMap/FarmMap CSS
+  - WeatherInfo
+  - Các section landing: HeroSection, FeaturesSection, KnowledgeSection, ContactSection
+
+12. Những điểm nổi bật đã triển khai tốt
+- Real-time Firestore cho products.
+- Role-based access cho admin dashboard.
+- Tích hợp giỏ hàng + localStorage.
+- Checkout có logic phí vận chuyển theo địa chỉ.
+- Thanh toán ngân hàng có QR.
+- Transaction đảm bảo tồn kho khi đặt hàng (ở /products).
+- Dự báo thời tiết có xử lý online/offline và auto-refresh (tác vụ theo chu kỳ).
+- Crop prediction có fallback nếu API bị thiếu.
+- Plotly chỉ chạy client để tránh SSR errors.
+
+KẾT LUẬN
+- SmartAgri là website đa chức năng gồm: e-commerce nông sản + quản trị đơn hàng + dự báo thời tiết/bản đồ nông trại + dự đoán cây trồng theo AI + các trang kiến thức/diễn đàn/phân tích thị trường.
+- Các tính năng chính đều đã có mặt trong code hiện có: Firebase Auth/Firestore/Storage, giỏ hàng localStorage, đơn hàng, admin role, QR thanh toán, map/weather integration, và crop prediction.
+
+---
+
+Gợi ý: Nếu bạn muốn mình xuất đúng định dạng .docx (không chỉ là text), mình cần tool hỗ trợ tạo file word hoặc bạn xác nhận bạn có thể chấp nhận file .doc/.pdf bằng nội dung tương tự.
+

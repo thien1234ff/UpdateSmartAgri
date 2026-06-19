@@ -1,0 +1,96 @@
+FILE GIỚI THIỆU SẢN PHẨM DỰ THI WCAG 2.2 – SmartAgri
+
+Tên sản phẩm: Smart Agriculture – Nông nghiệp thông minh (SmartAgri)
+Phạm vi: Website ứng dụng số phục vụ mua sản phẩm nông nghiệp + hỗ trợ kiến thức/tiện ích.
+
+1) Giới thiệu chung
+SmartAgri là website giúp người dùng:
+- Tìm kiếm và xem thông tin sản phẩm nông nghiệp.
+- Thêm vào giỏ hàng, đặt hàng, thanh toán và theo dõi trạng thái đơn.
+- Truy cập khu vực kiến thức/tin tức hướng dẫn liên quan nông nghiệp thông minh.
+- Sử dụng các công cụ/tiện ích tùy theo module triển khai (dự đoán năng suất, dự báo thời tiết, phân tích thị trường, chatbot...).
+
+Sản phẩm được xây dựng hướng tới Inclusive Design và tuân thủ yêu cầu về tiếp cận số theo WCAG 2.2, tập trung vào:
+- Khả năng sử dụng với screen reader
+- Điều hướng bằng bàn phím (keyboard)
+- Trạng thái/thông tin rõ ràng, không chỉ dựa vào màu
+- Nhãn điều khiển và thông báo lỗi/thành công đọc được
+- Bố cục ngữ nghĩa và quản lý focus khi mở modal
+
+2) Chức năng sản phẩm (Product Features)
+2.1 Trang sản phẩm/danh sách sản phẩm
+- Hiển thị danh sách sản phẩm nông nghiệp.
+- Tìm kiếm sản phẩm theo từ khóa.
+- Xem chi tiết sản phẩm (modal).
+- Thêm sản phẩm vào giỏ hàng.
+
+2.2 Giỏ hàng & thanh toán
+- Modal giỏ hàng:
+  - Tăng/giảm số lượng sản phẩm.
+  - Xóa từng sản phẩm hoặc xóa toàn bộ.
+  - Xem tổng tiền.
+  - Chuyển sang màn hình/flow thanh toán.
+- Modal thanh toán:
+  - Nhập thông tin giao hàng.
+  - Chọn phương thức thanh toán.
+  - Hiển thị thông báo trạng thái đặt hàng (success/error).
+
+2.3 Theo dõi đơn hàng
+- Hiển thị danh sách đơn và trạng thái.
+- Mở modal chi tiết đơn theo từng đơn.
+
+2.4 Khu vực kiến thức/hướng dẫn
+- Nội dung được trình bày có cấu trúc (heading), thuận lợi cho screen reader.
+
+2.5 Tiện ích hỗ trợ (tùy module)
+- Dự đoán năng suất
+- Dự báo thời tiết
+- Phân tích thị trường
+- Chatbot hỗ trợ
+
+3) Đối tượng người dùng
+- Người nông dân/khách hàng có nhu cầu mua sản phẩm và đặt hàng nhanh.
+- Người khiếm thị/nhìn kém (dùng screen reader).
+- Người hạn chế vận động (ưu tiên thao tác bằng bàn phím).
+- Người dùng công nghệ hỗ trợ (assistive technology).
+
+4) Giải pháp áp dụng WCAG 2.2
+4.1 Hỗ trợ screen reader
+- Sử dụng landmark/heading rõ ràng.
+- Modal có role và thuộc tính truy cập:
+  - role="dialog"
+  - aria-modal="true"
+  - aria-labelledby trỏ tới tiêu đề modal
+- Thông báo trạng thái dùng role/aria-live để đọc thông tin thành công/thất bại.
+
+4.2 Điều hướng bằng bàn phím
+- ESC đóng modal.
+- Quản lý focus khi modal mở.
+- Focus trap trong modal để Tab/Shift+Tab không thoát ra nền.
+
+4.3 Nhãn điều khiển & form
+- Các trường form có label gắn ngữ nghĩa phù hợp với input/select/textarea.
+- Thông báo lỗi/thành công hiển thị rõ ràng và đọc được.
+
+4.4 Không phụ thuộc màu sắc
+- Trạng thái và dữ liệu luôn kèm văn bản (không chỉ dựa vào màu).
+
+4.5 Focus visible
+- Các nút trong modal/giỏ hàng hiển thị ring khi focus để người dùng nhận biết rõ vị trí.
+
+4.6 Hình ảnh & mô tả
+- Ảnh mang thông tin có alt mô tả phù hợp.
+- Ảnh trang trí có thể dùng alt rỗng (tùy module).
+
+5) Hướng dẫn demo nhanh (cho Ban Giám khảo)
+- Dùng phím Tab/Shift+Tab để duyệt các điều khiển.
+- Mở Giỏ hàng:
+  - Tab đi vào các nút trong giỏ (tăng/giảm/xóa/thanh toán).
+  - ESC đóng giỏ.
+- Mở Thanh toán:
+  - Tab qua các trường nhập.
+- Kiểm tra thông báo thành công/thất bại có thể đọc bằng screen reader.
+
+6) Kết luận
+SmartAgri là website thực tiễn trong lĩnh vực nông nghiệp, đồng thời thể hiện rõ cơ chế tiếp cận theo WCAG 2.2: hỗ trợ screen reader, điều hướng bằng bàn phím, quản lý focus trong modal, và thông báo trạng thái đọc được.
+

@@ -1,0 +1,245 @@
+.farm-nav {
+  background: rgb(176, 217, 181);
+  padding: 8px 12px;
+  border-radius: 50px;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 16px;
+  overflow-x: auto;
+  max-width: 100%;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  box-sizing: border-box;
+}
+
+.farm-nav::-webkit-scrollbar {
+  display: none;
+}
+
+.farm-nav ul {
+  display: flex;
+  gap: 6px;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  min-width: min-content;
+  width: 100%;
+  justify-content: space-between;
+}
+
+.farm-nav li {
+  border-radius: 25px;
+  transition: background 0.3s ease;
+  flex-shrink: 0;
+  flex: 1;
+  min-width: 0;
+  text-align: center;
+}
+
+.farm-nav li a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 6px 8px;
+  color: white;
+  font-weight: 500;
+  text-decoration: none;
+  border-radius: 25px;
+  white-space: nowrap;
+  font-size: 0.85rem;
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+}
+
+.farm-nav li.active {
+  background: rgb(43, 145, 55);
+}
+
+.farm-nav li:hover {
+  background: rgb(43, 145, 55);
+}
+
+.farm-nav .icon {
+  display: flex;
+  font-size: 0.85rem;
+  flex-shrink: 0;
+}
+
+/* Rút ngắn chữ trên mobile - giải pháp mạnh */
+.farm-nav .nav-text {
+  display: inline-block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 70px;
+  line-height: 1.2;
+}
+
+/* Mobile small - thay thế bằng từ viết tắt */
+@media (max-width: 480px) {
+  .farm-nav {
+    padding: 6px 10px;
+  }
+  
+  .farm-nav ul {
+    gap: 4px;
+  }
+  
+  .farm-nav li a {
+    padding: 5px 6px;
+    font-size: 0.8rem;
+    gap: 3px;
+  }
+  
+  .farm-nav .icon {
+    font-size: 0.8rem;
+  }
+  
+  .farm-nav .nav-text {
+    max-width: 55px;
+    font-size: 0.75rem;
+  }
+  
+  /* Thay thế từ dài bằng từ ngắn hơn */
+  .farm-nav .nav-text[data-full="Dashboard"] {
+    display: none;
+  }
+  
+  .farm-nav .nav-text[data-full="Dashboard"]::after {
+    content: "DB";
+    font-size: 0.75rem;
+  }
+  
+  .farm-nav .nav-text[data-full="Nông trại"] {
+    display: none;
+  }
+  
+  .farm-nav .nav-text[data-full="Nông trại"]::after {
+    content: "Nông trại";
+    font-size: 0.75rem;
+  }
+  
+  .farm-nav .nav-text[data-full="Cây trồng"] {
+    display: none;
+  }
+  
+  .farm-nav .nav-text[data-full="Cây trồng"]::after {
+    content: "Cây trồng";
+    font-size: 0.75rem;
+  }
+  
+  .farm-nav .nav-text[data-full="Thống kê"] {
+    display: none;
+  }
+  
+  .farm-nav .nav-text[data-full="Thống kê"]::after {
+    content: "TK";
+    font-size: 0.75rem;
+  }
+}
+
+/* Very small mobile - chỉ hiện icon */
+@media (max-width: 360px) {
+  .farm-nav .nav-text {
+    display: none !important;
+  }
+  
+  .farm-nav li a {
+    padding: 8px 10px;
+    gap: 0;
+  }
+  
+  /* Hiển thị tooltip khi hover */
+  .farm-nav li a:hover::after {
+    content: attr(data-title);
+    position: absolute;
+    bottom: -30px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    white-space: nowrap;
+    z-index: 1000;
+  }
+  
+  .farm-nav li {
+    position: relative;
+  }
+}
+
+/* Tablet */
+@media (min-width: 641px) {
+  .farm-nav {
+    padding: 10px 20px;
+    margin-bottom: 20px;
+  }
+  
+  .farm-nav ul {
+    gap: 12px;
+    justify-content: center;
+  }
+  
+  .farm-nav li {
+    flex: none;
+  }
+  
+  .farm-nav li a {
+    gap: 8px;
+    padding: 8px 16px;
+    font-size: 1rem;
+  }
+  
+  .farm-nav .icon {
+    font-size: 1rem;
+  }
+  
+  .farm-nav .nav-text {
+    max-width: none;
+    font-size: 1rem;
+  }
+  
+  /* Khôi phục text đầy đủ trên tablet */
+  .farm-nav .nav-text[data-full]::after {
+    content: none !important;
+  }
+  
+  .farm-nav .nav-text[data-full] {
+    display: inline-block !important;
+  }
+}
+
+/* Desktop */
+@media (min-width: 1024px) {
+  .farm-nav ul {
+    gap: 20px;
+  }
+  
+  .farm-nav li a {
+    padding: 8px 20px;
+  }
+}
+
+/* Đặc biệt cho màn hình rất hẹp */
+@media (max-width: 320px) {
+  .farm-nav {
+    padding: 4px 6px;
+    border-radius: 25px;
+  }
+  
+  .farm-nav ul {
+    gap: 2px;
+  }
+  
+  .farm-nav li a {
+    padding: 6px 8px;
+  }
+  
+  .farm-nav .icon {
+    font-size: 0.75rem;
+  }
+}

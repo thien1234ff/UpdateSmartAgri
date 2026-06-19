@@ -1,0 +1,63 @@
+Kế hoạch nâng cấp SmartAgri để tham gia cuộc thi WCAG 2.2
+Tổng hợp dựa trên thể lệ cuộc thi và phân tích hệ thống SmartAgri.
+1. Mục tiêu chiến lược
+Định vị SmartAgri là nền tảng nông nghiệp số tiếp cận cho mọi người.
+Nhấn mạnh hỗ trợ người khiếm thị, người lớn tuổi, người hạn chế vận động và người sử dụng bàn phím thay chuột.
+Xây dựng hồ sơ sản phẩm tập trung vào Accessibility thay vì số lượng tính năng.
+2. Các hạng mục bắt buộc để đạt WCAG 2.2
+Bổ sung Skip Navigation (Bỏ qua menu).
+Điều hướng hoàn toàn bằng bàn phím (Tab, Shift+Tab, Enter, Space, Esc).
+Hiển thị focus indicator rõ ràng cho mọi thành phần tương tác.
+Thêm label cho toàn bộ input, không chỉ dùng placeholder.
+Thêm aria-label cho icon button và các thành phần không có text.
+Thông báo lỗi form bằng role='alert' hoặc aria-live.
+Kiểm tra cấu trúc heading H1-H6 hợp lý.
+Alt text đầy đủ cho mọi hình ảnh.
+Kiểm tra độ tương phản màu sắc đạt chuẩn WCAG AA.
+Hỗ trợ screen reader cho tất cả các trang chính.
+3. Accessibility Toolbar
+Tăng/giảm kích thước chữ.
+Chế độ tương phản cao.
+Điều chỉnh khoảng cách chữ.
+Tắt animation.
+Lưu tùy chọn vào localStorage.
+Cho phép bật/tắt nhanh từ mọi trang.
+4. Hỗ trợ người khiếm thị
+Chế độ Blind Mode.
+Tự động đọc nội dung bằng Text-to-Speech.
+Phóng to font và tăng độ tương phản.
+Làm nổi bật vùng focus khi điều hướng bằng bàn phím.
+5. Hỗ trợ giọng nói
+Voice Assistant điều hướng website bằng giọng nói.
+Voice Input cho các biểu mẫu.
+Đọc kết quả AI Crop Prediction bằng giọng nói.
+Điều khiển các trang Weather, Forum, Knowledge bằng lệnh thoại.
+6. Nâng cấp từng module
+Home: thêm skip link, heading chuẩn, alt text.
+Products: hỗ trợ screen reader cho giỏ hàng và checkout.
+Login/Register: label chuẩn, thông báo lỗi truy cập được.
+Profile: hỗ trợ bàn phím hoàn chỉnh.
+Weather: mô tả dữ liệu thời tiết bằng văn bản cho screen reader.
+Crop Prediction: đọc kết quả bằng giọng nói, hỗ trợ nhập liệu bằng giọng nói.
+Forum/Knowledge: cải thiện semantic HTML.
+Admin Dashboard: hỗ trợ keyboard navigation.
+7. Nội dung đa phương tiện
+Thêm phụ đề cho video.
+Thêm transcript văn bản.
+Thêm mô tả cho hình ảnh và infographic.
+8. Hồ sơ dự thi
+Trang Accessibility Statement.
+Báo cáo WCAG 2.2 Compliance.
+Tài liệu mô tả các tiêu chí đã triển khai.
+Video demo khả năng tiếp cận.
+Minh chứng kiểm thử bằng screen reader và bàn phím.
+9. Hạng mục tạo khác biệt
+SmartAgri Voice Assistant.
+Điều khiển website bằng giọng nói.
+AI hỗ trợ nông dân khuyết tật.
+Voice-guided Crop Prediction.
+Voice-guided Weather Assistant.
+10. Ưu tiên triển khai
+Mức 1 (bắt buộc): WCAG, keyboard, screen reader, contrast, alt text, aria-label.
+Mức 2 (nâng cao): Accessibility Toolbar, Text-to-Speech, Blind Mode.
+Mức 3 (cạnh tranh giải cao): Voice Assistant và điều khiển bằng giọng nói.

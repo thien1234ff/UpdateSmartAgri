@@ -1,0 +1,117 @@
+Phục lục 4
+THỂ LỆ
+Cuộc thi thiết kế website/ứng dụng số đảm bảo tiêu chuẩn tiếp cận WCAG 2.2
+I. Mục đích, ý nghĩa
+Cuộc thi “Thiết kế website/ứng dụng số đảm bảo tiếp cận số theo tiêu chuẩn WCAG 2.2” được tổ chức nhằm:
+- Nâng cao nhận thức và hiểu biết nền tảng về tiếp cận số (Digital Accessibility) và tiêu chuẩn WCAG 2.2 cho sinh viên ngành Công nghệ thông tin (CNTT).
+- Tăng cường năng lực thực hành cho sinh viên trong việc áp dụng tiêu chuẩn tiếp cận số vào thiết kế và phát triển website/ứng dụng số nhằm đảm bảo khả năng tiếp cận cho người khuyết tật.
+- Thúc đẩy tư duy thiết kế bao trùm (Inclusive Design) trong quá trình phát triển sản phẩm số.
+- Khuyến khích sinh viên sáng tạo các giải pháp công nghệ có giá trị thực tiễn phục vụ cộng đồng.
+II. Đối tượng tham gia
+Sinh viên đang theo học tại Trường Đại học Khoa học – Đại học Huế và Trường Đại học Phú Xuân
+Hình thức tham gia:
+- Tham gia cá nhân hoặc theo nhóm.
+- Mỗi nhóm tối đa 06 thành viên.
+- Mỗi cá nhân/nhóm được đăng ký tối đa 01 sản phẩm dự thi.
+- Cuộc thi được tổ chức độc lập, riêng biệt tại từng trường. Thí sinh đăng ký tham gia tại trường mình đang theo học.
+III. Thời gian và địa điểm tổ chức
+1. Thời gian tổ chức
+Cuộc thi dự kiến diễn ra từ tháng 4 đến tháng 6 năm 2026, gồm các mốc dự kiến:
+- Phát động cuộc thi: 09 - 20/05/2026
+- Tổng hợp đăng ký tham gia: 21/05/2026
+- Tiếp nhận giải đáp thắc mắc về cuộc thi: 09/05 – 26/06/2026.
+- Thời gian nhận bài dự thi: từ 09/05/2026 – 19/06/2026
+- Chấm bài và công bố kết quả vào chung kết: tháng 20 – 21/06/2026.
+- Truyền thông sản phẩm: 22 – 26/06/2026
+- Tổng kết và trao giải:
++ Trường Đại học Phú Xuân 29/6/2026
++ Trường Đại học Khoa học - Đại học Huế: 30/06/2026
+2. Địa điểm
+Trường Đại học Khoa học - Đại học Huế và Trường Đại học Phú Xuân
+IV. Nội dung cuộc thi
+1. Yêu cầu đối với sản phẩm dự thi
+- Sản phẩm dự thi là website hoặc ứng dụng số.
+- Sản phẩm được thiết kế và phát triển dựa trên các nguyên tắc cơ bản của tiêu chuẩn WCAG 2.2 nhằm đảm bảo khả năng tiếp cận cho người khuyết tật.
+- Không yêu cầu xây dựng hệ thống quy mô lớn, phức tạp hoặc sản phẩm thương mại hoàn chỉnh mà hướng đến việc tuân thủ tiêu chuẩn tiếp cận WCAG 2.2 và ưu tiên khả năng sử dụng của người khuyết tật.
+- Sản phẩm cần thể hiện một số yếu tố tiếp cận số như:
++ Hỗ trợ đọc màn hình (screen reader);
++ Điều hướng bằng bàn phím;
++ Độ tương phản màu sắc phù hợp;
++ Phụ đề hoặc mô tả cho nội dung đa phương tiện (nếu có);
++ Nội dung rõ ràng, cấu trúc hợp lý, dễ sử dụng.
+2. Chủ đề sản phẩm
+Thí sinh có thể lựa chọn chủ đề tự do, ví dụ: trang tin tức, trang giải trí, trang tìm kiếm việc làm, công cụ hỗ trợ người khuyết tật, sản phẩm số phục vụ cộng đồng, v.v…
+Ban Tổ chức khuyến khích các sản phẩm có tính ứng dụng thực tiễn, đặc biệt trong các lĩnh vực: học tập, việc làm, tiếp cận thông tin, hỗ trợ đời sống của người khuyết tật.
+V. Quy trình tổ chức cuộc thi
+1. Đăng ký tham gia
+Cuộc thi được phát động thông qua các kênh truyền thông của Trường và Khoa Công nghệ thông tin.
+Sinh viên đăng ký tham gia theo biểu mẫu đăng ký trực tuyến do Ban Tổ chức cung cấp: https://forms.gle/9QH7NodgDeCcXM4JA
+
+Hạn cuối đăng ký: dự kiến 17/05/2026
+Ban Tổ chức sẽ tổ tiếp nhận giải đáp thắc mắc về cuộc thi và tiêu chuẩn WCAG, dự kiến từ ngày 07/05/2026.
+2. Nộp bài dự thi
+Bài dự thi bao gồm:
+- Link truy cập website/ứng dụng số;
+- File giới thiệu sản phẩm (PDF/Word/video) mô tả chức năng sản phẩm, đối tượng người dùng, giải pháp áp dụng tiêu chuẩn WCAG 2.2;
+- Khuyến khích cung cấp source code.
+- Bài dự thi được gửi về địa chỉ do ban tổ chức cung cấp: t.le@hi.org
+- Tiêu đề: Nộp bài dự thi WCAG – Mã trường (ĐHKH/ĐHPX) - Mã sinh viên của cá nhân/đại điện nhóm thi.
+- Hạn cuối nộp sản phẩm dự thi: 19/06/2026
+3. Đánh giá các sản phẩm dự thi:
+Ban Giám khảo có trách nhiệm chấm điểm các sản phẩm, chọn ra các sản phẩm có số điểm cao nhất để trình bày tại buổi trao giải.
+Các sản phẩm dự thi đạt yêu cầu sẽ được lựa và công bố trước ngày 21/06/2026.
+Tiêu chí đánh giá gồm:
+- Mức độ đáp ứng tiêu chuẩn WCAG 2.2.
+- Mức độ thân thiện và khả năng sử dụng đối với người khuyết tật.
+- Mức độ hoàn thiện và tính ổn định của website/ứng dụng số.
+- Tính sáng tạo của ý tưởng.
+- Khả năng ứng dụng thực tế của sản phẩm.
+4. Hoạt động truyền thông cho sản phẩm
+Các đội thi có sản phẩm được lựa chọn trao giải sẽ:
+- Viết bài giới thiệu sản phẩm
+- Đăng tải trên trang Facebook của Trường/Khoa CNTT
+- Sử dụng hashtag chính thức của cuộc thi: #WCAG #TiepCanSo #EU #HI
+Các đội thi được khuyến khích chia sẻ và lan tỏa sản phẩm để thu hút tương tác từ cộng đồng.
+5. Tổng kết và trao giải
+Tại buổi tổng kết và trao giải, các đội thi được lựa chọn sẽ:
+- Trình bày ý tưởng và giải pháp của sản phẩm.
+- Thực hiện demo trực tiếp website/ứng dụng số.
+- Trả lời câu hỏi từ Ban Giám khảo.
+VI. Ban tổ chức
+Ban tổ chức cuộc thi tại mỗi trường gồm đại diện của:
+- Nhà trường và Khoa CNTT ;
+- Tổ chức HI.
+Ban tổ chức có trách nhiệm:
+- Xây dựng kế hoạch và điều phối các hoạt động của cuộc thi.
+- Thành lập Ban Giám khảo;
+- Tổ chức các hoạt động truyền thông;
+- Công bố kết quả và trao giải;
+VII. Ban giám khảo
+Thành phần Ban giám khảo tại mỗi trường sẽ bao gồm:
+- 03 Giảng viên Khoa CNTT của Trường.
+- 01 Tư vấn về tiếp cận số từ Tổ chức HI.
+- 01 đại diện Hội Người khuyết tật thành phố Huế.
+Ban giám khảo có trách nhiệm:
+- Xây dựng khung chấm điểm dựa theo các tiêu chí đánh giá;
+- Chấm điểm các và lựa chọn các bài thi có điểm cao nhất trình bày tại buổi tổng kết và trao giải;
+- Đưa ra câu hỏi, nhận xét và công bố các giải thưởng tại đêm chung kết.
+VIII. Cơ cấu giải thưởng
+1. Giải cho sản phẩm website/ứng dụng số
+Các bài dự thi được chọn vào vòng chung kết sẽ được trao giải với dự kiến cơ cấu giải như sau:
+- 01 Giải Nhất: 5.000.000 VNĐ và giấy khen của BTC
+- 02 Giải Nhì: 3.000.000 VNĐ và giấy khen của BTC
+- 03 Giải Ba: 2.000.000 VNĐ và giấy khen của BTC
+- 04 Giải Khuyến khích: 1.000.000 VNĐ và giấy khen của BTC
+2. Giải truyền thông
+- 03 Giải Truyền thông, mỗi giải trị giá 1.000.000 VNĐ và giấy khen của BTC dành cho bài đăng có tổng số lượt tương tác cao nhất (bao gồm lượt thích, chia sẻ và bình luận hợp lệ) 
+- Thời điểm chốt số liệu tương tác: 72h trước khi diễn ra buổi tổng kết và trao giải.
+Cơ cấu giải thưởng có thể thay đổi dựa vào chất lượng và số lượng sản phẩm dự thi.
+IX. Quy định chung
+1. Sản phẩm dự thi phải do chính thí sinh/nhóm thí sinh thiết kế và phát triển. 
+2. Không được sử dụng sản phẩm đã từng tham gia hoặc đạt giải trong các cuộc thi khác. 
+3. Ban Tổ chức có quyền sử dụng các sản phẩm dự thi cho mục đích truyền thông, đào tạo và phổ biến kiến thức về tiếp cận số; 
+4. Thí sinh phải tuân thủ đầy đủ các quy định của cuộc thi và hướng dẫn của Ban Tổ chức.
+5. Quyết định của Ban Giám khảo là quyết định cuối cùng.
+6. Cơ cấu giải thưởng có thể được điều chỉnh phù hợp với số lượng và chất lượng sản phẩm dự thi.
+X. Liên hệ giải đáp thắc mắc
+Mọi thông tin chi tiết xin vui lòng liên hệ cán bộ kỹ thuật của dự án - Lê Tấn Tuyển, email: t.le@hi.org, số điện thoại: 0988466293.
