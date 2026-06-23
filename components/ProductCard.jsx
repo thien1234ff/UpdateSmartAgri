@@ -37,7 +37,7 @@ export default function ProductCard({ product, onAddToCart, onViewDetail }) {
         </div>
 
         {product.discount && product.discount > 0 && (
-          <div className="absolute top-3 left-3 px-3 py-1 bg-gradient-to-r from-red-500 to-pink-500 text-white text-xs font-bold rounded-full shadow-lg border border-white/20 transform group-hover:scale-105 transition-transform duration-300 animate-pulse">
+          <div className="absolute top-3 left-3 px-3 py-1 bg-gradient-to-r from-red-500 to-pink-500 text-white text-xs font-bold rounded-full shadow-lg border border-white/20 transform group-hover:scale-105 transition-transform duration-300">
             -{product.discount}%
           </div>
         )}
